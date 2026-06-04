@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>プロンプト 貼り付けマシーン</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>🪄 プロンプト貼り付けマシーン</h1>
+        <p style="color: #fff; background: #e02424; padding: 6px 12px; border-radius: 4px; display: inline-block; font-weight: bold; margin: 8px 0;">【同期テスト中】Antigravity IDEから同期されました！</p>
+        <p>個人的な実験・創作支援目的で作成したツールです。<br>
+            非公式のファンツールであり、特定作品の再現や複製を意図するものではありません。</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="mix-modal-trigger-btn" onclick="copyTwoImagePrompt()">📸 画像2枚ミックスコピー</button>
+        <span id="syncBadge" class="sync-badge">⏳ 接続中...</span>
+    </div>
+</header>
+    <div class="main-container">
+        <div class="left-content-area">
+            <div class="control-container">
+                <button class="genre-toggle-btn" id="genreToggleBtn" onclick="toggleGenreCollapse()">🗂️ ジャンルを選択 🔽</button>
+                <div class="genre-tabs" id="genreTabs">
+                    <span class="search-count" id="genreLabelPc" style="margin-right:5px;">🗂️ ジャンル：</span>
+                    <button class="genre-tab-btn active" onclick="filterByGenre('all')">✨ すべて</button>
+                </div>
+                <div class="search-row">
+                    <span class="search-count">🔍 絞り込み：</span>
+                    <input type="text" id="searchBar" class="search-box" placeholder="作品名や解説の単語を入力してください...">
+                    <span id="matchCount" class="search-count">全 0 件</span>
+                </div>
+            </div>
+
+            <div class="canvas-area" id="canvasArea"></div>
+        </div>
+
+        <div class="sidebar">
+            <div class="box">
+                <label style="display:block; margin-bottom:10px;">🐾 1. 生成モードを選択してください</label>
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="image" onclick="switchMode('image')">🖼️ Geminiに画像を貼り付け</button>
+                    <button class="mode-btn" data-mode="text" onclick="switchMode('text')">✏️ 言葉（テキスト）で指定</button>
+                </div>
+
+                <div id="imageModeInput" style="display: block;">
+                    <label style="display: block; margin-bottom: 8px;">▼ 出したい被写体（日本語・英語どちらでもOK）</label>
+                    <input type="text" id="subjectInput" placeholder="例: a cute cat, 剣を持った戦士">
+                    <div class="image-guide-box">
+                        💡 使い方案内：<br>
+                        この後コピーする指示文をGeminiのチャット欄に貼り付け、変身させたい画像ファイルも一緒に添付して送信してください！
+                    </div>
+                </div>
+            </div>
+
+            <div class="box topping-area">
+                <label>🍜 2. 追加トッピング（3個×2段のタグ仕様）</label>
+                <div class="topping-grid">
+                    <button class="topping-btn" data-tag="hadasho" onclick="toggleTopping('hadasho')">⚡ 演出派手</button>
+                    <button class="topping-btn" data-tag="yoru" onclick="toggleTopping('yoru')">🎨 作品寄り</button>
+                    <button class="topping-btn" data-tag="kyojo" onclick="toggleTopping('kyojo')">📸 演出強調</button>
+                    <button class="topping-btn" data-tag="serifu" onclick="toggleTopping('serifu')">💬 セリフ</button>
+                    <button class="topping-btn" data-tag="color" onclick="toggleTopping('color')">🌈 カラー</button>
+                    <button class="topping-btn" data-tag="monochrome" onclick="toggleTopping('monochrome')">🖤 白黒</button>
+                </div>
+            </div>
+
+            <div class="box preview-area">
+                <label>📋 3. 自動生成されたAIへの指示文</label>
+                <textarea id="outputBox" class="output-box" readonly></textarea>
+                <button id="copyBtn" class="copy-btn image-theme" onclick="copyPrompt()">1クリックでコピーする</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">クリップボードにコピーしました！</div>
+    <script src="script.js"></script>
+</body>
+</html>

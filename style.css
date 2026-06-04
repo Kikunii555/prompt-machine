@@ -1,0 +1,330 @@
+:root {
+    --bg-color: #f8f9fa;
+    --canvas-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --text-color: #1e293b;
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --image-mode-color: #10b981;
+    --image-mode-hover: #059669;
+
+    /* 🎨 各ジャンル専用のテーマカラー */
+    --color-new: #f97316;       /* ① 新しい作品：オレンジ */
+    --color-retro: #06b6d4;     /* ② 懐かしい作品：シアン（水色） */
+    --color-author: #8b5cf6;    /* ③ 作者・スタジオ：パープル */
+    --color-game: #10b981;      /* ④ ゲーム：グリーン */
+    --color-foreign: #ec4899;   /* ⑤ 海外作品：ピンク */
+    --color-design: #64748b;    /* ⑥ デザイン・方向性：ダークグレー */
+    --color-default: #94a3b8;   /* 万が一の未分類：ライトグレー */
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans JP", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* 🚀 高さを画面いっぱいに固定 */
+    box-sizing: border-box;
+}
+
+header {
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+header h1 { margin: 0 0 6px 0; font-size: 24px; color: #0f172a; letter-spacing: -0.02em; }
+header p { margin: 0; color: #64748b; font-size: 13.5px; }
+
+.main-container {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    min-height: 0;
+    height: calc(100vh - 140px); /* 🚀 画面の下端までコンテナを強制的に伸ばす */
+}
+
+.left-content-area {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    height: 100%; /* 🚀 縦幅を100%に固定 */
+}
+
+.control-container {
+    background: #fff;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.genre-toggle-btn {
+    display: none;
+    width: 100%;
+    padding: 11px;
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #475569;
+    cursor: pointer;
+    text-align: center;
+    outline: none;
+}
+
+.genre-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.genre-tab-btn {
+    padding: 7px 16px;
+    border: 1px solid var(--border-color);
+    background: #f8f9fa;
+    color: #475569;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.genre-tab-btn:hover { border-color: var(--primary-color); color: var(--primary-color); background: #fff; }
+.genre-tab-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25); }
+
+.search-row { display: flex; gap: 12px; align-items: center; }
+.search-box { flex: 1; padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14.5px; outline: none; transition: all 0.2s; background: #f8f9fa; }
+.search-box:focus { border-color: var(--primary-color); background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); }
+.search-count { font-size: 13px; color: #64748b; font-weight: 600; white-space: nowrap; }
+
+.canvas-area {
+    flex: 1;
+    background: var(--canvas-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.genre-section { margin-bottom: 32px; }
+.genre-section.hidden { display: none; }
+
+.genre-title {
+    font-size: 16px;
+    font-weight: 700;
+    border-left: 5px solid var(--genre-theme-color, var(--primary-color));
+    padding-left: 12px;
+    margin-bottom: 18px;
+    color: #1e293b;
+    letter-spacing: -0.01em;
+}
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+
+/* 🌟 プレミアム・スタイルカード（縦幅コンパクト版） */
+.style-card {
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid var(--genre-theme-color, var(--border-color));
+    border-radius: 12px;
+    padding: 12px 16px;    /* 🚀 上下を12pxにキュッと縮めてミニマム化 */
+    cursor: pointer;
+    background: #ffffff;
+    position: relative;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 4px 12px rgba(15, 23, 42, 0.02);
+    transition: transform 0.25s cubic-bezier(0.215, 0.610, 0.355, 1), box-shadow 0.25s ease, border-color 0.2s ease;
+}
+
+.style-card.hidden { display: none; }
+
+.style-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--genre-theme-color, var(--primary-color));
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.style-card:active {
+    transform: translateY(-2px) scale(0.98);
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+.style-card.selected {
+    border-color: var(--genre-theme-color, var(--primary-color)) !important;
+    background-color: var(--genre-bg-color, #eff6ff) !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06) !important;
+}
+.style-card.selected::after {
+    content: "✓ 選択中";
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    color: var(--genre-theme-color, var(--primary-color));
+    font-size: 11px;
+    font-weight: 700;
+    background: #ffffff;
+    padding: 2px 6px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.card-name { font-weight: 700; font-size: 15.5px; margin-bottom: 8px; color: #0f172a; letter-spacing: -0.01em;}
+.card-desc { font-size: 12.5px; color: #475569; line-height: 1.5; margin-bottom: 8px; }
+.card-add-desc { font-size: 11px; color: #94a3b8; line-height: 1.4; border-top: 1px dashed #f1f5f9; padding-top: 6px; margin-top: 4px;}
+
+/* 👉 右サイドバー全体の構造調整 */
+.sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+    overflow-y: auto; /* 🚀 画面が狭い場合にサイドバー単体でスクロール可能にする */
+}
+
+.box { background: #fff; border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02); }
+.mode-selector { display: flex; gap: 10px; margin-bottom: 15px; }
+
+.mode-btn { flex: 1; padding: 11px; border: 1px solid var(--border-color); background: #f8f9fa; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 13px; text-align: center; transition: all 0.2s; }
+.mode-btn:active { transform: scale(0.97); }
+.mode-btn.active[data-mode="text"] { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+.mode-btn.active[data-mode="image"] { background-color: var(--image-mode-color); color: white; border-color: var(--image-mode-color); }
+
+.input-group { display: flex; flex-direction: column; gap: 8px; }
+label { font-weight: 700; font-size: 13px; color: #334155; }
+input[type="text"] { width: 100%; padding: 11px; border: 1px solid var(--border-color); border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #f8f9fa; transition: all 0.2s; }
+input[type="text"]:focus { background: #fff; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); }
+
+.image-guide-box { margin-top: 12px; background-color: #f0fdf4; border: 1px dashed var(--image-mode-color); border-radius: 8px; padding: 14px; font-size: 13px; line-height: 1.55; color: #166534; }
+
+/* 🍜 トッピングエリア（3列×2段のタグ仕様） */
+.topping-area { display: flex; flex-direction: column; gap: 8px; padding: 14px; }
+
+.topping-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); /* 🚀 ここで3列指定 */
+    gap: 6px; 
+    margin-top: 2px; 
+}
+
+.topping-btn {
+    padding: 6px 4px;      /* 🚀 タグサイズに調整 */
+    font-size: 11px;       /* 文字を小さく */
+    font-weight: 600;
+    color: #475569;
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;    /* 角丸をしっかり */
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    white-space: nowrap;   /* 文字が折り返さないように */
+}
+
+.topping-btn:hover { background: #ffffff; border-color: #cbd5e1; }
+
+.topping-btn.active {
+    background: #fff7ed;
+    color: #ea580c;
+    border-color: #ffedd5;
+    box-shadow: inset 0 0 0 1.5px #fdba74, 0 1px 3px rgba(234, 88, 12, 0.05);
+}
+
+/* 📋 【修正】指示文プレビューエリア（3）を最優先で最大化する設定 */
+.preview-area { 
+    display: flex; 
+    flex-direction: column; 
+}
+.output-box { 
+    width: 100%; 
+    flex: 1;               /* 🚀 テキスト入力エリア自体も箱の中で限界まで引き伸ばす */
+    min-height: 160px;     /* 🚀 潰れ防止：最低でも160pxの高さを確保する */
+    margin-top: 10px; 
+    padding: 14px; 
+    border: 1px solid var(--border-color); 
+    border-radius: 8px; 
+    background: #f8fafc; 
+    font-family: ui-monospace, monospace; 
+    font-size: 13px; 
+    resize: none; 
+    box-sizing: border-box; 
+    color: #334155; 
+    line-height: 1.5; 
+}
+
+.copy-btn { width: 100%; padding: 14px; color: white; border: none; border-radius: 8px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all 0.2s, transform 0.1s; margin-top: 12px; letter-spacing: 0.02em; }
+.copy-btn:active { transform: scale(0.98); }
+.copy-btn.text-theme { background-color: var(--primary-color); }
+.copy-btn.text-theme:hover { background-color: var(--primary-hover); }
+.copy-btn.image-theme { background-color: var(--image-mode-color); }
+.copy-btn.image-theme:hover { background-color: var(--image-mode-hover); }
+
+.toast { position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: white; padding: 12px 24px; border-radius: 8px; font-size: 13.5px; font-weight: 600; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 10000; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+.sync-badge { display: inline-block; padding: 5px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 700; letter-spacing: -0.01em; }
+.sync-success { background-color: #dcfce7; color: #166534; }
+
+/* 📱 スマホ用トランスフォーム */
+@media (max-width: 768px) {
+    body { padding: 12px; height: auto; min-height: 100vh; padding-bottom: 270px; }
+    header { flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .main-container { flex-direction: column; gap: 16px; }
+    .genre-toggle-btn { display: block; }
+    .genre-tabs { display: none; flex-direction: column; width: 100%; padding-top: 5px; }
+    .genre-tabs.open { display: flex; }
+    .genre-tab-btn { width: 100%; text-align: center; box-sizing: border-box; }
+    .card-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .style-card { padding: 10px 12px; border-top-width: 4px; }
+    .style-card:hover { transform: translateY(0); box-shadow: none; }
+    .style-card:active { transform: scale(0.96); }
+    .card-name { font-size: 14px; margin-bottom: 6px; }
+    .card-desc, .card-add-desc { font-size: 11.5px; }
+
+    .topping-area { background: #fff; padding: 10px; border-radius: 12px; border: 1px solid var(--border-color); }
+    .box.preview-area {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.12);
+        z-index: 9999;
+        padding: 16px;
+        background: #ffffff;
+        border-top: 1px solid var(--border-color);
+        height: 190px;
+    }
+    .output-box { height: 64px; margin-top: 6px; }
+    .copy-btn { margin-top: 10px; padding: 12px; }
+    .toast { bottom: 210px; right: 50%; transform: translateX(50%); }
+}
+
+/* 📸 画像ミックスコピー ボタンの装飾 */
+.mix-modal-trigger-btn {
+    background-color: #df4d3a;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(223, 77, 58, 0.2);
+}
+.mix-modal-trigger-btn:hover {
+    background-color: #b93c2c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(223, 77, 58, 0.3);
+}
+.mix-modal-trigger-btn:active {
+    transform: translateY(1px);
+}
